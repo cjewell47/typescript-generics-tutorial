@@ -13,15 +13,23 @@ type Event =
       type: "LOGOUT";
     };
 
-interface Config {
-  initial: State;
-  events: Record<string, (state: any, event: any) => State>;
+type ConfigEvents<TEvent extends { type: string }, TState> = {
+  [K in TEvent["type"]]: (
+    state: TState,
+    event: Extract<TEvent, { type: K }>
+  ) => TState;
+};
+    
+
+interface Config<TState, TEvent extends { type: string }> {
+  initial: TState;
+  events: ConfigEvents<TEvent, TState>
 }
 
 export const makeReducer =
-  (config: Config) =>
-  (state: any, event: any): any => {
-    const handler = config.events[event.type];
+  <TState, TEvent extends { type: string }>(config: Config<TState, TEvent>) =>
+  (state: TState, event: TEvent): TState => {
+    const handler = (config.events as any)[event.type];
     if (!handler) {
       return state;
     }
@@ -55,7 +63,7 @@ it("Should create a reducer which can handle all events", () => {
 
   type tests = [
     Expect<Equal<typeof loggedInState, State>>,
-    Expect<Equal<typeof loggedOutState, State>>,
+    Expect<Equal<typeof loggedOutState, State>>
   ];
 });
 
@@ -75,6 +83,6 @@ it("Should not allow invalid keys to be passed to state", () => {
   });
 
   type tests = [
-    Expect<Equal<typeof reducer, (state: State, event: Event) => State>>,
+    Expect<Equal<typeof reducer, (state: State, event: Event) => State>>
   ];
 });

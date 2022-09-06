@@ -5,25 +5,23 @@
 
 import { Equal, Expect } from "./helpers/type-utils";
 
-export interface UserData {
-  data: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
+export interface DataObj<TData> {
+  data: TData;
 }
 
-export interface PostData {
-  data: {
-    title: string;
-  };
-}
+export type UserData = DataObj<{
+  id: string;
+  firstName: string;
+  lastName: string;
+}>;
 
-export interface CommentData {
-  data: {
-    comment: string;
-  };
-}
+export type PostData = DataObj<{
+  title: string;
+}>;
+
+export type CommentData = DataObj<{
+  comment: string;
+}>;
 
 type tests = [
   Expect<

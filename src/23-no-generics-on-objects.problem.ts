@@ -1,4 +1,15 @@
-export const configObj = {
+export type FetchersObj<T extends string> = {
+  [K in T]?: () => any 
+}
+
+export interface ConfigObj<T extends string> {
+  routes: T[];
+  fetchers: FetchersObj<T>;
+}
+
+const makeConfigObj = <T extends string>(config: ConfigObj<T>) => config;
+
+export const configObj = makeConfigObj({
   routes: ["/", "/about", "/contact"],
   /**
    * fetchers is an object where you can optionally
@@ -13,4 +24,4 @@ export const configObj = {
       return {};
     },
   },
-};
+});

@@ -8,13 +8,13 @@ const isString = (t: unknown): t is string => {
   return typeof t === "string";
 };
 
-interface TransformerConfig<TOutput> {
-  checker: (t: unknown) => boolean;
-  transformer: (t: unknown) => TOutput;
+interface TransformerConfig<TOutput, TInput> {
+  checker: (t: unknown) => t is TInput;
+  transformer: (t: TInput) => TOutput;
 }
 
-export const makeTransformer = <TOutput>(
-  config: TransformerConfig<TOutput>,
+export const makeTransformer = <TOutput, TInput>(
+  config: TransformerConfig<TOutput, TInput>,
 ) => {
   return (t: unknown): TOutput => {
     if (config.checker(t)) {
